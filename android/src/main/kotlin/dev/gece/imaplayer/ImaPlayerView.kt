@@ -223,7 +223,7 @@ internal class ImaPlayerView(
     }
 
     private fun generateMediaItem(uri: Uri): MediaItem {
-        val builder = MediaItem.Builder().setUri(uri)
+        val builder = MediaItem.Builder().setUri(uri).setMimeType(MimeTypes.APPLICATION_M3U8)
 
         if (imaPlayerSettings.isAdsEnabled) {
             builder.setAdsConfiguration(AdsConfiguration.Builder(imaPlayerSettings.tag!!).build())
