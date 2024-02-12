@@ -60,8 +60,11 @@ internal class ImaPlayerView(
     private var playerView: PlayerView = PlayerView(context)
     private var exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
     // Ads
-
-
+    private var adsLoader = ImaAdsLoader.Builder(context)
+        .setImaSdkSettings(imaSdkSettings)
+        .setAdErrorListener(this)
+        .setAdEventListener(this)
+        .build()
 
     private var adsManager: AdsManager? = null
 
@@ -85,13 +88,6 @@ internal class ImaPlayerView(
             playerView.controllerAutoShow = false
             playerView.useController = imaPlayerSettings.showPlaybackControls
         }
-
-        val adsLoader = ImaServerSideAdInsertionMediaSource.AdsLoader.Builder(context,playerView)
-            .setImaSdkSettings(imaSdkSettings)
-            .setAdErrorListener(this)
-            .setAdEventListener(this)
-            .build()
-
 
         if (imaPlayerSettings.isAdsEnabled) {
             adsLoader.setPlayer(exoPlayer);
