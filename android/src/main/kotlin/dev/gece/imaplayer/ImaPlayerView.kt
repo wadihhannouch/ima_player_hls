@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.annotation.OptIn
 import androidx.annotation.RequiresApi
@@ -15,6 +14,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaItem.AdsConfiguration
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
@@ -23,7 +23,8 @@ import androidx.media3.datasource.DataSource
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.ima.ImaAdsLoader
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
 import com.google.ads.interactivemedia.v3.api.AdErrorEvent
@@ -37,8 +38,6 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.EventSink
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
-import java.util.Timer
-import java.util.TimerTask
 
 
 @RequiresApi(Build.VERSION_CODES.N)
@@ -60,13 +59,9 @@ internal class ImaPlayerView(
     // Video Player
     private var playerView: PlayerView = PlayerView(context)
     private var exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build()
-
     // Ads
-    private var adsLoader = ImaAdsLoader.Builder(context)
-        .setImaSdkSettings(imaSdkSettings)
-        .setAdErrorListener(this)
-        .setAdEventListener(this)
-        .build()
+
+
 
     private var adsManager: AdsManager? = null
 
@@ -91,6 +86,13 @@ internal class ImaPlayerView(
             playerView.useController = imaPlayerSettings.showPlaybackControls
         }
 
+        val adsLoader = ImaServerSideAdInsertionMediaSource.AdsLoader.Builder(context,playerView)
+            .setImaSdkSettings(imaSdkSettings)
+            .setAdErrorListener(this)
+            .setAdEventListener(this)
+            .build()
+
+
         if (imaPlayerSettings.isAdsEnabled) {
             adsLoader.setPlayer(exoPlayer);
         }
@@ -98,12 +100,11 @@ internal class ImaPlayerView(
         val dataSourceFactory: DataSource.Factory =
             DefaultDataSource.Factory(context, httpDataSourceFactory)
 
-        val mediaSourceWithAdFactory = DefaultMediaSourceFactory(context)
-            .setDataSourceFactory(dataSourceFactory);
+//
+//        if (imaPlayerSettings.isAdsEnabled) {
+//            mediaSourceWithAdFactory.setLocalAdInsertionComponents({ _ -> adsLoader }, playerView)
+//        }
 
-        if (imaPlayerSettings.isAdsEnabled) {
-            mediaSourceWithAdFactory.setLocalAdInsertionComponents({ _ -> adsLoader }, playerView)
-        }
 
         exoPlayer.volume = imaPlayerSettings.initialVolume.toFloat()
         exoPlayer.playWhenReady = imaPlayerSettings.autoPlay
@@ -189,7 +190,7 @@ internal class ImaPlayerView(
         })
 
         val mediaItem = generateMediaItem(imaPlayerSettings.uri)
-        exoPlayer.addMediaSource(mediaSourceWithAdFactory.createMediaSource(mediaItem))
+        exoPlayer.addMediaSource(HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem))
         exoPlayer.prepare();
 
     }
