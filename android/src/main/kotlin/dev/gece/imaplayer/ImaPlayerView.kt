@@ -185,8 +185,9 @@ internal class ImaPlayerView(
             }
         })
 
-        val mediaItem = generateMediaItem(imaPlayerSettings.uri)
-        exoPlayer.addMediaSource(HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem))
+        val hlsMediaSource = generateMediaItem(imaPlayerSettings.uri)
+
+        exoPlayer.addMediaSource(hlsMediaSource)
         exoPlayer.prepare();
 
     }
@@ -219,14 +220,15 @@ internal class ImaPlayerView(
         )
     }
 
-    private fun generateMediaItem(uri: Uri): MediaItem {
-        val builder = MediaItem.Builder().setUri(uri).setMimeType(MimeTypes.APPLICATION_M3U8)
+    private fun generateMediaItem(uri: Uri): HlsMediaSource {
+        val builder = MediaItem.fromUri(imaPlayerSettings.uri)
+
 
         if (imaPlayerSettings.isAdsEnabled) {
             builder.setAdsConfiguration(AdsConfiguration.Builder(imaPlayerSettings.tag!!).build())
         }
-
-        return builder.build();
+        val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(builder)
+        return hlsMediaSource;
     }
 
     private fun sendPlayState() {
@@ -279,7 +281,7 @@ internal class ImaPlayerView(
     private fun play(uri: String?, result: MethodChannel.Result) {
         if (uri != null) {
             exoPlayer.clearMediaItems()
-            exoPlayer.addMediaItem(generateMediaItem(Uri.parse(uri)))
+            exoPlayer.addMediaSource(generateMediaItem(Uri.parse(uri)))
         }
 
         exoPlayer.playWhenReady = true
