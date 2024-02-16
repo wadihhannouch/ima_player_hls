@@ -1,6 +1,5 @@
 @file:OptIn(UnstableApi::class)
 
-package dev.gece.imaplayer
 
 import android.content.Context
 import android.net.Uri
@@ -24,8 +23,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
-import androidx.media3.exoplayer.ima.ImaServerSideAdInsertionMediaSource
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.ima.ImaAdsLoader
 import androidx.media3.ui.PlayerView
 import com.google.ads.interactivemedia.v3.api.AdErrorEvent
 import com.google.ads.interactivemedia.v3.api.AdErrorEvent.AdErrorListener
@@ -67,7 +65,7 @@ internal class ImaPlayerView(
         .build()
 
     private var adsManager: AdsManager? = null
-
+    // wwadih
     private val userAgent = "User-Agent"
     private val httpDataSourceFactory = DefaultHttpDataSource.Factory()
     private val mainHandler = Handler(Looper.getMainLooper())

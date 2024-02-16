@@ -1,4 +1,3 @@
-package dev.gece.imaplayer
 
 import android.net.Uri
 

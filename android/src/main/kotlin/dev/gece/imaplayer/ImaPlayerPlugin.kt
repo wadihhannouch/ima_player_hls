@@ -1,4 +1,3 @@
-package dev.gece.imaplayer
 
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
