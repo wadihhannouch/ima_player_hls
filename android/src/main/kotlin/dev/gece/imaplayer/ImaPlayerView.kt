@@ -185,7 +185,7 @@ internal class ImaPlayerView(
             }
         })
 
-        val hlsMediaSource = generateMediaItem(imaPlayerSettings.uri)
+        val hlsMediaSource = generateMediaItem(imaPlayerSettings.uri, dataSourceFactory)
 
         exoPlayer.addMediaSource(hlsMediaSource)
         exoPlayer.prepare();
@@ -220,7 +220,7 @@ internal class ImaPlayerView(
         )
     }
 
-    private fun generateMediaItem(uri: Uri): HlsMediaSource {
+    private fun generateMediaItem(uri: Uri, dataSourceFactory: DataSource.Factory): HlsMediaSource {
         val builder = MediaItem.fromUri(imaPlayerSettings.uri)
 
 
