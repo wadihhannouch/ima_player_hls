@@ -223,10 +223,10 @@ internal class ImaPlayerView(
     private fun generateMediaItem(uri: Uri, dataSourceFactory: DataSource.Factory): HlsMediaSource {
         val builder = MediaItem.fromUri(imaPlayerSettings.uri)
 
-
         if (imaPlayerSettings.isAdsEnabled) {
             builder.setAdsConfiguration(AdsConfiguration.Builder(imaPlayerSettings.tag!!).build())
         }
+
         val hlsMediaSource: HlsMediaSource = HlsMediaSource.Factory(dataSourceFactory).createMediaSource(builder)
         return hlsMediaSource;
     }
