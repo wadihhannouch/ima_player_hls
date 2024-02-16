@@ -16,7 +16,7 @@ import './ima_player_models.dart';
 part 'ima_player_ui.dart';
 part 'ima_player_view.dart';
 part 'ima_player_controller.dart';
-//w
+//wadih
 class ImaPlayerOptions {
   const ImaPlayerOptions({
     this.autoPlay = true,
